@@ -70,24 +70,16 @@
   .header {
     position: relative;
     z-index: 1;
-    padding: 36px 24px 20px;
+    padding: 22px 24px 14px;
     text-align: center;
   }
 
   .logo {
     font-family: 'Black Han Sans', sans-serif;
-    font-size: 30px;
+    font-size: 26px;
     letter-spacing: 2px;
     color: #ffffff;
     text-shadow: 0 2px 8px rgba(0,0,0,0.15);
-  }
-
-  .logo-sub {
-    font-size: 12px;
-    color: rgba(255,255,255,0.65);
-    letter-spacing: 4px;
-    text-transform: uppercase;
-    margin-top: 3px;
   }
 
   /* ====== RESULT AREA ====== */
@@ -96,10 +88,10 @@
     z-index: 1;
     margin: 0 24px 0;
     background: #ffffff;
-    border-radius: 20px;
+    border-radius: 18px;
     border: none;
-    padding: 24px 20px;
-    min-height: 110px;
+    padding: 16px 20px;
+    min-height: 88px;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -149,9 +141,9 @@
 
   .result-number {
     font-family: 'Black Han Sans', sans-serif;
-    font-size: 36px;
-    width: 58px;
-    height: 58px;
+    font-size: 30px;
+    width: 50px;
+    height: 50px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -189,26 +181,26 @@
     position: relative;
     z-index: 1;
     flex: 1;
-    padding: 16px 24px 32px;
+    padding: 10px 24px 20px;
     overflow-y: auto;
   }
 
   .cta-wrap-inline {
-    margin-top: 20px;
+    margin-top: 14px;
   }
 
   /* ====== SECTION ====== */
   .section {
-    margin-top: 24px;
+    margin-top: 16px;
   }
 
   .section-label {
     font-family: 'Jua', sans-serif;
-    font-size: 13px;
+    font-size: 12px;
     letter-spacing: 2px;
     text-transform: uppercase;
     color: var(--accent);
-    margin-bottom: 12px;
+    margin-bottom: 8px;
     display: flex;
     align-items: center;
     gap: 8px;
@@ -225,17 +217,17 @@
   .range-grid {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    gap: 8px;
+    gap: 7px;
   }
 
   .range-btn {
-    height: 50px;
+    height: 44px;
     border-radius: var(--radius-sm);
     border: 1.5px solid var(--border);
     background: #ffffff;
     color: var(--text);
     font-family: 'Jua', sans-serif;
-    font-size: 18px;
+    font-size: 17px;
     cursor: pointer;
     transition: all 0.15s ease;
     position: relative;
@@ -266,7 +258,7 @@
 
   .custom-input {
     width: 100%;
-    height: 50px;
+    height: 44px;
     border-radius: var(--radius-sm);
     border: 1.5px solid var(--border);
     background: #ffffff;
@@ -299,7 +291,7 @@
   .count-group {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 8px;
+    gap: 7px;
   }
 
   .count-option {
@@ -307,8 +299,8 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 4px;
-    padding: 10px 8px;
+    gap: 5px;
+    padding: 8px 8px;
     border-radius: var(--radius-sm);
     background: #ffffff;
     border: 1.5px solid var(--border);
@@ -393,8 +385,8 @@
 
   .cta-btn {
     width: 100%;
-    height: 62px;
-    border-radius: 18px;
+    height: 54px;
+    border-radius: 16px;
     border: none;
     background: linear-gradient(135deg, #1a56db, #1e3a8a);
     color: white;
@@ -477,7 +469,6 @@
 <div class="app">
   <div class="header">
     <div class="logo">결정맨</div>
-    <div class="logo-sub">숫자 뽑기 결정기</div>
   </div>
 
   <!-- Result Area -->
@@ -517,17 +508,14 @@
       <div class="count-group">
         <label class="count-option selected" data-count="1" onclick="selectCount(this)">
           <div class="count-badge">1</div>
-          <div class="count-label">1개 뽑기</div>
           <div class="radio-circle"><div class="radio-dot"></div></div>
         </label>
         <label class="count-option" data-count="6" onclick="selectCount(this)">
           <div class="count-badge">6</div>
-          <div class="count-label">6개 뽑기</div>
           <div class="radio-circle"><div class="radio-dot"></div></div>
         </label>
         <label class="count-option" data-count="7" onclick="selectCount(this)">
           <div class="count-badge">7</div>
-          <div class="count-label">7개 뽑기</div>
           <div class="radio-circle"><div class="radio-dot"></div></div>
         </label>
       </div>
