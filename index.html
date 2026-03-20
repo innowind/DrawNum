@@ -215,10 +215,18 @@
 
   /* ====== RANGE BUTTONS ====== */
   .range-grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    display: flex;
+    flex-direction: column;
     gap: 7px;
   }
+
+  .range-row {
+    display: grid;
+    gap: 7px;
+  }
+
+  .range-row-top { grid-template-columns: repeat(4, 1fr); }
+  .range-row-bottom { grid-template-columns: repeat(3, 1fr); }
 
   .range-btn {
     height: 44px;
@@ -487,13 +495,15 @@
     <div class="section">
       <div class="section-label">숫자 범위 선택</div>
       <div class="range-grid">
-        <button class="range-btn selected" data-val="2" onclick="selectRange(this)">2</button>
-        <button class="range-btn" data-val="3" onclick="selectRange(this)">3</button>
-        <button class="range-btn" data-val="4" onclick="selectRange(this)">4</button>
-        <button class="range-btn" data-val="5" onclick="selectRange(this)">5</button>
-        <button class="range-btn wide" data-val="10" onclick="selectRange(this)">10</button>
-        <button class="range-btn wide" data-val="45" onclick="selectRange(this)">45</button>
-        <div class="custom-input-wrap">
+        <div class="range-row range-row-top">
+          <button class="range-btn selected" data-val="2" onclick="selectRange(this)">2</button>
+          <button class="range-btn" data-val="3" onclick="selectRange(this)">3</button>
+          <button class="range-btn" data-val="4" onclick="selectRange(this)">4</button>
+          <button class="range-btn" data-val="5" onclick="selectRange(this)">5</button>
+        </div>
+        <div class="range-row range-row-bottom">
+          <button class="range-btn" data-val="10" onclick="selectRange(this)">10</button>
+          <button class="range-btn" data-val="45" onclick="selectRange(this)">45</button>
           <input class="custom-input" id="customInput" type="number" min="2" max="9999"
             placeholder="직접 입력"
             oninput="onCustomInput(this)"
