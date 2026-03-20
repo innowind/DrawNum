@@ -1,0 +1,711 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>결정맨</title>
+<link href="https://fonts.googleapis.com/css2?family=Jua&family=Black+Han+Sans&family=Noto+Sans+KR:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #f0f4fb;
+    --surface: #ffffff;
+    --card: #ffffff;
+    --accent: #1a56db;
+    --accent2: #1e3a8a;
+    --accent3: #3b82f6;
+    --accent4: #f59e0b;
+    --text: #1e293b;
+    --text-muted: #94a3b8;
+    --border: #e2e8f0;
+    --radius: 16px;
+    --radius-sm: 12px;
+  }
+
+  html, body {
+    height: 100%;
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Noto Sans KR', sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  body {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    min-height: 100vh;
+    padding: 0;
+  }
+
+  .app {
+    width: 100%;
+    max-width: 420px;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    background: var(--bg);
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* Top blue header band */
+  .app::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
+    max-width: 420px;
+    height: 180px;
+    background: linear-gradient(160deg, #1a56db 0%, #1e3a8a 100%);
+    pointer-events: none;
+    z-index: 0;
+    border-radius: 0 0 32px 32px;
+  }
+
+  /* ====== HEADER ====== */
+  .header {
+    position: relative;
+    z-index: 1;
+    padding: 36px 24px 20px;
+    text-align: center;
+  }
+
+  .logo {
+    font-family: 'Black Han Sans', sans-serif;
+    font-size: 30px;
+    letter-spacing: 2px;
+    color: #ffffff;
+    text-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  }
+
+  .logo-sub {
+    font-size: 12px;
+    color: rgba(255,255,255,0.65);
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    margin-top: 3px;
+  }
+
+  /* ====== RESULT AREA ====== */
+  .result-area {
+    position: relative;
+    z-index: 1;
+    margin: 0 24px 0;
+    background: #ffffff;
+    border-radius: 20px;
+    border: none;
+    padding: 24px 20px;
+    min-height: 110px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    box-shadow: 0 8px 32px rgba(26,86,219,0.13);
+  }
+
+  .result-area::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(26,86,219,0.04), rgba(59,130,246,0.04));
+    border-radius: 20px;
+  }
+
+  .result-idle {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .result-idle-icon {
+    font-size: 32px;
+    animation: float 3s ease-in-out infinite;
+  }
+
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-6px); }
+  }
+
+  .result-idle-text {
+    color: var(--text-muted);
+    font-size: 14px;
+  }
+
+  .result-numbers {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: center;
+    position: relative;
+    z-index: 1;
+  }
+
+  .result-number {
+    font-family: 'Black Han Sans', sans-serif;
+    font-size: 36px;
+    width: 58px;
+    height: 58px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #1a56db, #1e3a8a);
+    border-radius: 14px;
+    box-shadow: 0 4px 20px rgba(26,86,219,0.35);
+    color: white;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .result-number.rolling {
+    animation: rollColor 0.08s linear infinite;
+  }
+
+  @keyframes rollColor {
+    0%   { background: linear-gradient(135deg, #1a56db, #1e3a8a); }
+    25%  { background: linear-gradient(135deg, #3b82f6, #1a56db); }
+    50%  { background: linear-gradient(135deg, #06b6d4, #3b82f6); }
+    75%  { background: linear-gradient(135deg, #6366f1, #1e3a8a); }
+    100% { background: linear-gradient(135deg, #1a56db, #1e3a8a); }
+  }
+
+  .result-number.locked {
+    animation: popIn 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+  }
+
+  @keyframes popIn {
+    0% { transform: scale(0.6); opacity: 0.5; }
+    100% { transform: scale(1); opacity: 1; }
+  }
+
+  /* ====== CONTENT SCROLL ====== */
+  .content {
+    position: relative;
+    z-index: 1;
+    flex: 1;
+    padding: 16px 24px 32px;
+    overflow-y: auto;
+  }
+
+  .cta-wrap-inline {
+    margin-top: 20px;
+  }
+
+  /* ====== SECTION ====== */
+  .section {
+    margin-top: 24px;
+  }
+
+  .section-label {
+    font-family: 'Jua', sans-serif;
+    font-size: 13px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .section-label::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(to right, rgba(26,86,219,0.2), transparent);
+  }
+
+  /* ====== RANGE BUTTONS ====== */
+  .range-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+  }
+
+  .range-btn {
+    height: 50px;
+    border-radius: var(--radius-sm);
+    border: 1.5px solid var(--border);
+    background: #ffffff;
+    color: var(--text);
+    font-family: 'Jua', sans-serif;
+    font-size: 18px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    position: relative;
+    overflow: hidden;
+    -webkit-tap-highlight-color: transparent;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+  }
+
+  .range-btn:active {
+    transform: scale(0.94);
+  }
+
+  .range-btn.selected {
+    background: linear-gradient(135deg, #1a56db, #1e3a8a);
+    border-color: transparent;
+    box-shadow: 0 4px 16px rgba(26,86,219,0.35);
+    color: white;
+  }
+
+  .range-btn.wide {
+    grid-column: span 2;
+  }
+
+  .custom-input-wrap {
+    grid-column: span 2;
+    position: relative;
+  }
+
+  .custom-input {
+    width: 100%;
+    height: 50px;
+    border-radius: var(--radius-sm);
+    border: 1.5px solid var(--border);
+    background: #ffffff;
+    color: var(--text);
+    font-family: 'Jua', sans-serif;
+    font-size: 16px;
+    text-align: center;
+    outline: none;
+    transition: all 0.15s ease;
+    -webkit-appearance: none;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+  }
+
+  .custom-input::placeholder {
+    color: var(--text-muted);
+    font-size: 13px;
+  }
+
+  .custom-input:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(26,86,219,0.12);
+  }
+
+  .custom-input.selected {
+    border-color: var(--accent);
+    background: rgba(26,86,219,0.06);
+  }
+
+  /* ====== COUNT RADIO ====== */
+  .count-group {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+  }
+
+  .count-option {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    padding: 10px 8px;
+    border-radius: var(--radius-sm);
+    background: #ffffff;
+    border: 1.5px solid var(--border);
+    cursor: pointer;
+    transition: all 0.15s ease;
+    -webkit-tap-highlight-color: transparent;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+  }
+
+  .count-option:active {
+    transform: scale(0.96);
+  }
+
+  .count-option.selected {
+    border-color: var(--accent);
+    background: rgba(26,86,219,0.06);
+  }
+
+  .count-option.selected::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(to right, #1a56db, #3b82f6);
+    border-radius: 2px 2px 0 0;
+  }
+
+  .radio-circle {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    border: 2px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: all 0.2s ease;
+  }
+
+  .count-option.selected .radio-circle {
+    border-color: var(--accent);
+    background: var(--accent);
+  }
+
+  .radio-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: white;
+    transform: scale(0);
+    transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  .count-option.selected .radio-dot {
+    transform: scale(1);
+  }
+
+  .count-label {
+    font-family: 'Jua', sans-serif;
+    font-size: 13px;
+    color: var(--text-muted);
+    transition: color 0.15s;
+  }
+
+  .count-option.selected .count-label {
+    color: var(--accent);
+  }
+
+  .count-badge {
+    font-family: 'Black Han Sans', sans-serif;
+    font-size: 26px;
+    color: #cbd5e1;
+    transition: color 0.15s;
+    line-height: 1;
+  }
+
+  .count-option.selected .count-badge {
+    color: var(--accent);
+  }
+
+  .cta-btn {
+    width: 100%;
+    height: 62px;
+    border-radius: 18px;
+    border: none;
+    background: linear-gradient(135deg, #1a56db, #1e3a8a);
+    color: white;
+    font-family: 'Black Han Sans', sans-serif;
+    font-size: 20px;
+    letter-spacing: 4px;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 8px 24px rgba(26,86,219,0.35);
+    transition: all 0.2s ease;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .cta-btn::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(255,255,255,0.15), transparent);
+  }
+
+  .cta-btn:active {
+    transform: scale(0.97);
+    box-shadow: 0 4px 12px rgba(26,86,219,0.25);
+  }
+
+  .cta-btn.loading {
+    pointer-events: none;
+  }
+
+  .cta-btn.loading .cta-text {
+    opacity: 0;
+  }
+
+  .cta-ripple {
+    position: absolute;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.3);
+    transform: scale(0);
+    animation: ripple 0.6s linear;
+    pointer-events: none;
+  }
+
+  @keyframes ripple {
+    to { transform: scale(4); opacity: 0; }
+  }
+
+  /* ====== CONFETTI ====== */
+  .confetti-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 999;
+    overflow: hidden;
+  }
+
+  .confetti-piece {
+    position: absolute;
+    width: 8px;
+    height: 8px;
+    border-radius: 2px;
+    top: -10px;
+    animation: confettiFall linear forwards;
+  }
+
+  @keyframes confettiFall {
+    0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+    80% { opacity: 1; }
+    100% { transform: translateY(110vh) rotate(720deg); opacity: 0; }
+  }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar { width: 0; }
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="header">
+    <div class="logo">결정맨</div>
+    <div class="logo-sub">숫자 뽑기 결정기</div>
+  </div>
+
+  <!-- Result Area -->
+  <div class="result-area" id="resultArea">
+    <div class="result-idle" id="resultIdle">
+      <div class="result-idle-icon">🎯</div>
+      <div class="result-idle-text">결과가 여기에 표시됩니다</div>
+    </div>
+    <div class="result-numbers" id="resultNumbers" style="display:none"></div>
+  </div>
+
+  <!-- Scrollable content -->
+  <div class="content">
+
+    <!-- Range Section -->
+    <div class="section">
+      <div class="section-label">숫자 범위 선택</div>
+      <div class="range-grid">
+        <button class="range-btn selected" data-val="2" onclick="selectRange(this)">2</button>
+        <button class="range-btn" data-val="3" onclick="selectRange(this)">3</button>
+        <button class="range-btn" data-val="4" onclick="selectRange(this)">4</button>
+        <button class="range-btn" data-val="5" onclick="selectRange(this)">5</button>
+        <button class="range-btn wide" data-val="10" onclick="selectRange(this)">10</button>
+        <button class="range-btn wide" data-val="45" onclick="selectRange(this)">45</button>
+        <div class="custom-input-wrap">
+          <input class="custom-input" id="customInput" type="number" min="2" max="9999"
+            placeholder="직접 입력"
+            oninput="onCustomInput(this)"
+            onfocus="onCustomFocus(this)">
+        </div>
+      </div>
+    </div>
+
+    <!-- Count Section -->
+    <div class="section">
+      <div class="section-label">뽑을 개수</div>
+      <div class="count-group">
+        <label class="count-option selected" data-count="1" onclick="selectCount(this)">
+          <div class="count-badge">1</div>
+          <div class="count-label">1개 뽑기</div>
+          <div class="radio-circle"><div class="radio-dot"></div></div>
+        </label>
+        <label class="count-option" data-count="6" onclick="selectCount(this)">
+          <div class="count-badge">6</div>
+          <div class="count-label">6개 뽑기</div>
+          <div class="radio-circle"><div class="radio-dot"></div></div>
+        </label>
+        <label class="count-option" data-count="7" onclick="selectCount(this)">
+          <div class="count-badge">7</div>
+          <div class="count-label">7개 뽑기</div>
+          <div class="radio-circle"><div class="radio-dot"></div></div>
+        </label>
+      </div>
+    </div>
+
+    <!-- CTA -->
+    <div class="cta-wrap-inline">
+      <button class="cta-btn" id="ctaBtn" onclick="onRoll(event)">
+        <span class="cta-text">결 정 하 기</span>
+      </button>
+    </div>
+
+  </div>
+
+</div>
+
+<div class="confetti-container" id="confettiContainer"></div>
+
+<script>
+  let selectedRange = 2;
+  let selectedCount = 1;
+
+  // ── Range select
+  function selectRange(btn) {
+    document.querySelectorAll('.range-btn').forEach(b => b.classList.remove('selected'));
+    document.querySelector('.custom-input').classList.remove('selected');
+    btn.classList.add('selected');
+    selectedRange = parseInt(btn.dataset.val);
+    document.getElementById('customInput').value = '';
+  }
+
+  function onCustomInput(input) {
+    document.querySelectorAll('.range-btn').forEach(b => b.classList.remove('selected'));
+    if (input.value && parseInt(input.value) >= 2) {
+      input.classList.add('selected');
+      selectedRange = parseInt(input.value);
+    } else {
+      input.classList.remove('selected');
+      selectedRange = null;
+    }
+  }
+
+  function onCustomFocus(input) {
+    document.querySelectorAll('.range-btn').forEach(b => b.classList.remove('selected'));
+    if (input.value && parseInt(input.value) >= 2) {
+      input.classList.add('selected');
+      selectedRange = parseInt(input.value);
+    }
+  }
+
+  // ── Count select
+  function selectCount(el) {
+    document.querySelectorAll('.count-option').forEach(o => o.classList.remove('selected'));
+    el.classList.add('selected');
+    selectedCount = parseInt(el.dataset.count);
+  }
+
+  // ── Roll
+  function onRoll(e) {
+    if (!selectedRange) {
+      shakeBtn();
+      return;
+    }
+    if (selectedCount > selectedRange) {
+      shakeBtn();
+      return;
+    }
+
+    createRipple(e);
+
+    const btn = document.getElementById('ctaBtn');
+    btn.classList.add('loading');
+
+    const idle = document.getElementById('resultIdle');
+    const numbersEl = document.getElementById('resultNumbers');
+
+    idle.style.display = 'none';
+    numbersEl.style.display = 'flex';
+    numbersEl.innerHTML = '';
+
+    // Create result slots
+    const slots = [];
+    for (let i = 0; i < selectedCount; i++) {
+      const el = document.createElement('div');
+      el.className = 'result-number rolling';
+      el.textContent = randInt(1, selectedRange);
+      numbersEl.appendChild(el);
+      slots.push(el);
+    }
+
+    // Pick actual results (unique)
+    const finals = pickUnique(1, selectedRange, selectedCount);
+
+    // Roll animation
+    const rollDuration = 1200;
+    const rollInterval = 80;
+
+    const intervals = slots.map((slot, i) => {
+      return setInterval(() => {
+        slot.textContent = randInt(1, selectedRange);
+      }, rollInterval);
+    });
+
+    // Lock each slot one by one
+    slots.forEach((slot, i) => {
+      const lockDelay = 500 + i * 200;
+      setTimeout(() => {
+        clearInterval(intervals[i]);
+        slot.classList.remove('rolling');
+        slot.textContent = finals[i];
+        slot.classList.add('locked');
+
+        if (i === slots.length - 1) {
+          btn.classList.remove('loading');
+          launchConfetti();
+        }
+      }, lockDelay);
+    });
+  }
+
+  function randInt(min, max) {
+    return Math.floor(Math.random() * max) + min;
+  }
+
+  function pickUnique(min, max, count) {
+    const pool = [];
+    for (let i = min; i <= max; i++) pool.push(i);
+    const result = [];
+    for (let i = 0; i < count; i++) {
+      const idx = Math.floor(Math.random() * pool.length);
+      result.push(pool.splice(idx, 1)[0]);
+    }
+    return result;
+  }
+
+  function shakeBtn() {
+    const btn = document.getElementById('ctaBtn');
+    btn.style.animation = 'none';
+    btn.offsetHeight;
+    btn.style.animation = 'shake 0.4s ease';
+    setTimeout(() => btn.style.animation = '', 400);
+
+    const style = document.getElementById('shakeStyle') || (() => {
+      const s = document.createElement('style');
+      s.id = 'shakeStyle';
+      s.textContent = `@keyframes shake { 0%,100%{transform:translateX(0)} 20%{transform:translateX(-6px)} 40%{transform:translateX(6px)} 60%{transform:translateX(-4px)} 80%{transform:translateX(4px)} }`;
+      document.head.appendChild(s);
+      return s;
+    })();
+  }
+
+  function createRipple(e) {
+    const btn = document.getElementById('ctaBtn');
+    const ripple = document.createElement('span');
+    ripple.className = 'cta-ripple';
+    const rect = btn.getBoundingClientRect();
+    const size = Math.max(rect.width, rect.height);
+    ripple.style.cssText = `width:${size}px;height:${size}px;left:${(rect.width-size)/2}px;top:${(rect.height-size)/2}px`;
+    btn.appendChild(ripple);
+    setTimeout(() => ripple.remove(), 700);
+  }
+
+  function launchConfetti() {
+    const colors = ['#f72585','#7209b7','#4cc9f0','#f8961e','#ffffff','#b5179e'];
+    const container = document.getElementById('confettiContainer');
+    for (let i = 0; i < 50; i++) {
+      const piece = document.createElement('div');
+      piece.className = 'confetti-piece';
+      const color = colors[Math.floor(Math.random() * colors.length)];
+      const left = Math.random() * 100;
+      const duration = 1.5 + Math.random() * 1.5;
+      const delay = Math.random() * 0.5;
+      const size = 6 + Math.random() * 8;
+      piece.style.cssText = `left:${left}%;background:${color};width:${size}px;height:${size}px;animation-duration:${duration}s;animation-delay:${delay}s;border-radius:${Math.random() > 0.5 ? '50%' : '2px'}`;
+      container.appendChild(piece);
+      setTimeout(() => piece.remove(), (duration + delay + 0.1) * 1000);
+    }
+  }
+</script>
+</body>
+</html>
