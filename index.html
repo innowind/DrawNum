@@ -299,15 +299,11 @@
     background: rgba(26,86,219,0.06);
   }
 
-  /* ====== COUNT RADIO ====== */
+  /* ====== COUNT ====== */
   .count-group {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(4, 1fr);
     gap: 7px;
-  }
-
-  .count-custom-wrap {
-    margin-top: 7px;
   }
 
   .count-custom-input {
@@ -341,8 +337,12 @@
     background: rgba(26,86,219,0.06);
   }
 
+  .count-custom-wrap {
+    grid-column: span 1;
+  }
+
   .option-line {
-    margin-top: 10px;
+    margin-bottom: 7px;
   }
 
   .check-option {
@@ -362,92 +362,30 @@
   }
 
   .count-option {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 5px;
-    padding: 8px 8px;
+    height: 44px;
     border-radius: var(--radius-sm);
-    background: #ffffff;
     border: 1.5px solid var(--border);
+    background: #ffffff;
+    color: var(--text);
+    font-family: 'Jua', sans-serif;
+    font-size: 17px;
     cursor: pointer;
     transition: all 0.15s ease;
-    -webkit-tap-highlight-color: transparent;
     position: relative;
     overflow: hidden;
+    -webkit-tap-highlight-color: transparent;
     box-shadow: 0 2px 6px rgba(0,0,0,0.06);
   }
 
   .count-option:active {
-    transform: scale(0.96);
+    transform: scale(0.94);
   }
 
   .count-option.selected {
-    border-color: var(--accent);
-    background: rgba(26,86,219,0.06);
-  }
-
-  .count-option.selected::before {
-    content: '';
-    position: absolute;
-    top: 0; left: 0; right: 0;
-    height: 2px;
-    background: linear-gradient(to right, #1a56db, #3b82f6);
-    border-radius: 2px 2px 0 0;
-  }
-
-  .radio-circle {
-    width: 16px;
-    height: 16px;
-    border-radius: 50%;
-    border: 2px solid var(--border);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-    transition: all 0.2s ease;
-  }
-
-  .count-option.selected .radio-circle {
-    border-color: var(--accent);
-    background: var(--accent);
-  }
-
-  .radio-dot {
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    background: white;
-    transform: scale(0);
-    transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
-  }
-
-  .count-option.selected .radio-dot {
-    transform: scale(1);
-  }
-
-  .count-label {
-    font-family: 'Jua', sans-serif;
-    font-size: 13px;
-    color: var(--text-muted);
-    transition: color 0.15s;
-  }
-
-  .count-option.selected .count-label {
-    color: var(--accent);
-  }
-
-  .count-badge {
-    font-family: 'Black Han Sans', sans-serif;
-    font-size: 26px;
-    color: #cbd5e1;
-    transition: color 0.15s;
-    line-height: 1;
-  }
-
-  .count-option.selected .count-badge {
-    color: var(--accent);
+    background: linear-gradient(135deg, #1a56db, #1e3a8a);
+    border-color: transparent;
+    box-shadow: 0 4px 16px rgba(26,86,219,0.35);
+    color: white;
   }
 
   .cta-btn {
@@ -575,31 +513,22 @@
     <!-- Count Section -->
     <div class="section">
       <div class="section-label">뽑을 개수</div>
-      <div class="count-group">
-        <label class="count-option selected" data-count="1" onclick="selectCount(this)">
-          <div class="count-badge">1</div>
-          <div class="radio-circle"><div class="radio-dot"></div></div>
-        </label>
-        <label class="count-option" data-count="6" onclick="selectCount(this)">
-          <div class="count-badge">6</div>
-          <div class="radio-circle"><div class="radio-dot"></div></div>
-        </label>
-        <label class="count-option" data-count="7" onclick="selectCount(this)">
-          <div class="count-badge">7</div>
-          <div class="radio-circle"><div class="radio-dot"></div></div>
-        </label>
-      </div>
-      <div class="count-custom-wrap">
-        <input class="count-custom-input" id="customCountInput" type="number" min="1" max="9999"
-          placeholder="뽑을 개수 직접 입력"
-          oninput="onCustomCountInput(this)"
-          onfocus="onCustomCountFocus(this)">
-      </div>
       <div class="option-line">
         <label class="check-option">
           <input type="checkbox" id="allowDuplicate" onchange="onDuplicateToggle(this)">
           <span>중복 뽑기 허용</span>
         </label>
+      </div>
+      <div class="count-group">
+        <button class="count-option selected" data-count="1" onclick="selectCount(this)">1</button>
+        <button class="count-option" data-count="6" onclick="selectCount(this)">6</button>
+        <button class="count-option" data-count="7" onclick="selectCount(this)">7</button>
+        <div class="count-custom-wrap">
+          <input class="count-custom-input" id="customCountInput" type="number" min="1" max="9999"
+            placeholder="직접 입력"
+            oninput="onCustomCountInput(this)"
+            onfocus="onCustomCountFocus(this)">
+        </div>
       </div>
     </div>
 
