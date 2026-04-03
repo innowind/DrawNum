@@ -32,33 +32,37 @@
   }
 
   body {
-    display: flex;
-    justify-content: center;
-    align-items: flex-start;
     min-height: 100vh;
+    overflow: hidden;
     padding: 0;
   }
 
+  .viewport {
+    width: 100vw;
+    height: 100dvh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+  }
+
   .app {
-    width: 100%;
-    max-width: 420px;
-    min-height: 100vh;
+    width: 420px;
     display: flex;
     flex-direction: column;
     background: var(--bg);
     position: relative;
     overflow: hidden;
+    transform-origin: center center;
   }
 
   /* Top blue header band */
   .app::before {
     content: '';
-    position: fixed;
+    position: absolute;
     top: 0;
-    left: 50%;
-    transform: translateX(-50%);
+    left: 0;
     width: 100%;
-    max-width: 420px;
     height: 180px;
     background: linear-gradient(160deg, #1a56db 0%, #1e3a8a 100%);
     pointer-events: none;
@@ -182,7 +186,7 @@
     z-index: 1;
     flex: 1;
     padding: 10px 24px 20px;
-    overflow-y: auto;
+    overflow: hidden;
   }
 
   .cta-wrap-inline {
@@ -474,7 +478,8 @@
 </style>
 </head>
 <body>
-<div class="app">
+<div class="viewport">
+<div class="app" id="app">
   <div class="header">
     <div class="logo">결정맨</div>
   </div>
@@ -541,12 +546,28 @@
   </div>
 
 </div>
+</div>
 
 <div class="confetti-container" id="confettiContainer"></div>
 
 <script>
   let selectedRange = 2;
   let selectedCount = 1;
+
+  function fitAppToViewport() {
+    const app = document.getElementById('app');
+    if (!app) return;
+
+    app.style.transform = 'scale(1)';
+    const { width, height } = app.getBoundingClientRect();
+    const scale = Math.min(window.innerWidth / width, window.innerHeight / height, 1);
+    app.style.transform = `scale(${scale})`;
+  }
+
+  window.addEventListener('resize', fitAppToViewport);
+  window.addEventListener('orientationchange', fitAppToViewport);
+  window.addEventListener('load', fitAppToViewport);
+
 
   // ── Range select
   function selectRange(btn) {
